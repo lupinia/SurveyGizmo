@@ -26,6 +26,8 @@ class Config(object):
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.md5_hash = kwargs.get('md5_hash', None)
+        self.api_token = kwargs.get('api_token')
+        self.api_token_secret = kwargs.get('api_token_secret')
         self.consumer_key = kwargs.get('consumer_key', None)
         self.consumer_secret = kwargs.get('consumer_secret', None)
         self.access_token = kwargs.get('access_token', None)
@@ -40,7 +42,7 @@ class Config(object):
     def validate(self):
         """ Perform validation check on properties.
         """
-        if not self.auth_method in ['user:pass', 'user:md5', 'oauth']:
+        if not self.auth_method in ['user:pass', 'user:md5', 'oauth', 'api_token',]:
             raise ImproperlyConfigured("No authentication method provided.")
         else:
             if self.auth_method == "user:pass":
@@ -55,6 +57,9 @@ class Config(object):
                 if not self.consumer_key or not self.consumer_secret or \
                    not self.access_token or not self.access_token_secret:
                     raise ImproperlyConfigured("OAuth consumer key and secret, and OAuth access token and secret required for 'oauth' authentication.")
+            elif self.auth_method == "api_token":
+                if not self.api_token or not self.api_token_secret:
+                    raise ImproperlyConfigured("API token and API token secret required for 'api_token' authentication.")
 
         if not self.response_type in ["json", "pson", "xml", "debug", None]:
             raise ImproperlyConfigured()
